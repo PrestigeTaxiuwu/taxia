@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль - Такси Престиж</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --uber-black: #000000;
+            --uber-dark: #1A1A1A;
+            --uber-gray: #2C2C2C;
+            --uber-light-gray: #3A3A3A;
+            --uber-text: #FFFFFF;
+            --uber-text-secondary: #B0B0B0;
+            --uber-text-light: #808080;
+            --uber-border: #333333;
+            --uber-success: #00D4AA;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--uber-black);
+            color: var(--uber-text);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 100%;
+            min-height: 100vh;
+            background: var(--uber-black);
+        }
+
+        .header {
+            background: var(--uber-black);
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--uber-border);
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--uber-text);
+        }
+
+        .profile-section {
+            padding: 24px;
+        }
+
+        .profile-card {
+            background: var(--uber-gray);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            border: 1px solid var(--uber-border);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .avatar {
+            width: 64px;
+            height: 64px;
+            background: var(--uber-text);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: var(--uber-black);
+            font-weight: 700;
+        }
+
+        .profile-info h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .profile-info p {
+            font-size: 14px;
+            color: var(--uber-text-secondary);
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--uber-border);
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-size: 14px;
+            color: var(--uber-text-secondary);
+        }
+
+        .info-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--uber-text);
+        }
+
+        .orders-section {
+            padding: 24px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--uber-text);
+        }
+
+        .order-card {
+            background: var(--uber-gray);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid var(--uber-border);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .order-id {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--uber-text);
+        }
+
+        .order-status {
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: rgba(255, 193, 7, 0.2);
+            color: #FFC107;
+        }
+
+        .status-assigned {
+            background: rgba(0, 212, 170, 0.2);
+            color: var(--uber-success);
+        }
+
+        .order-info {
+            font-size: 14px;
+            color: var(--uber-text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .order-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--uber-text);
+            margin-top: 8px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--uber-text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 48px;
+            color: var(--uber-text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-title">👤 Профиль</div>
+        </div>
+
+        <div class="profile-section">
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="avatar" id="avatar">👤</div>
+                    <div class="profile-info">
+                        <h2 id="userName">Загрузка...</h2>
+                        <p id="userPhone">...</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Всего заказов</span>
+                    <span class="info-value" id="totalOrders">0</span>
+                </div>
+                <div class="info-item">
+                    <div>
+                        <div class="info-label">Дата регистрации</div>
+                        <div class="info-value" id="regDate">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="orders-section">
+            <div class="section-title">История заказов</div>
+            <div id="ordersList" class="loading">Загрузка...</div>
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+
+        // Получаем данные пользователя из Telegram
+        const user = tg.initDataUnsafe?.user;
+        
+        if (user) {
+            document.getElementById('userName').textContent = user.first_name || 'Пользователь';
+            document.getElementById('avatar').textContent = user.first_name?.[0]?.toUpperCase() || '👤';
+        }
+
+        // Загружаем данные профиля
+        async function loadProfile() {
+            try {
+                // Отправляем запрос боту для получения данных
+                const response = await fetch('/api/profile', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        initData: tg.initData
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    if (data.phone) {
+                        document.getElementById('userPhone').textContent = data.phone;
+                    }
+                    if (data.total_orders !== undefined) {
+                        document.getElementById('totalOrders').textContent = data.total_orders;
+                    }
+                    if (data.registered_at) {
+                        const date = new Date(data.registered_at);
+                        document.getElementById('regDate').textContent = date.toLocaleDateString('ru-RU');
+                    }
+                    if (data.orders) {
+                        displayOrders(data.orders);
+                    }
+                } else {
+                    // Если API недоступен, используем данные из Telegram
+                    displayOrders([]);
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                displayOrders([]);
+            }
+        }
+
+        function displayOrders(orders) {
+            const ordersList = document.getElementById('ordersList');
+            
+            if (orders.length === 0) {
+                ordersList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <div>У вас пока нет заказов</div>
+                    </div>
+                `;
+                return;
+            }
+
+            ordersList.innerHTML = orders.map(order => {
+                const waypoints = order.waypoints ? JSON.parse(order.waypoints) : [];
+                const statusClass = order.status === 'assigned' ? 'status-assigned' : 'status-pending';
+                const statusText = order.status === 'assigned' ? 'Назначен' : 'Ожидает';
+                
+                let carInfo = '';
+                if (order.car_make && order.car_number) {
+                    carInfo = `
+                        <div class="order-info">🚗 ${order.car_make} ${order.car_number}</div>
+                    `;
+                }
+
+                return `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <span class="order-id">Заказ #${order.order_id}</span>
+                            <span class="order-status ${statusClass}">${statusText}</span>
+                        </div>
+                        <div class="order-info">📍 ${order.origin}</div>
+                        <div class="order-info">📍 ${order.destination}</div>
+                        ${waypoints.length > 0 ? `<div class="order-info">📍 Остановки: ${waypoints.join(', ')}</div>` : ''}
+                        ${carInfo}
+                        <div class="order-price">${order.total_price}₽</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Загружаем профиль при загрузке страницы
+        loadProfile();
+    </script>
+</body>
+</html>
+
+
